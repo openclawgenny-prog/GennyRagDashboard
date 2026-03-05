@@ -1,0 +1,10 @@
+{
+  "Image": "ghcr.io/openclawgenny-prog/masterofcontainers/ollama:latest",
+  "HostConfig": {
+    "Binds": ["/mnt/data_disk/models:/var/lib/ollama:rw"],
+    "RestartPolicy": {"Name": "unless-stopped"},
+    "PortBindings": {"11434/tcp": [{"HostPort": "11434"}]}
+  },
+  "ExposedPorts": {"11434/tcp": {}},
+  "Name": "ollama-all-minilm"
+}

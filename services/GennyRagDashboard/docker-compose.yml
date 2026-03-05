@@ -1,0 +1,18 @@
+version: '3.8'
+services:
+  rag-dashboard:
+    build: .
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./config.json:/app/config.json
+      - /mnt/data_disk/data/rag-docs:/mnt/data_disk/data/rag-docs
+      - /home/andrei/.openclaw/workspace/skills/rag-service:/rag-service
+    environment:
+      - POSTGRES_HOST=postgres-pgvector-db-1
+      - HAYSTACK_URL=http://haystack:8000
+    networks:
+      - postgres-pgvector_default
+networks:
+  postgres-pgvector_default:
+    external: true

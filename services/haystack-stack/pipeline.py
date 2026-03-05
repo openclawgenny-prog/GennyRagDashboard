@@ -14,7 +14,7 @@ import httpx
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import uvicorn
-from haystack import Document, Secret
+from haystack import Document
 from haystack_integrations.document_stores.pgvector import PgvectorDocumentStore
 from haystack_integrations.components.retrievers.pgvector import PgvectorEmbeddingRetriever
 
@@ -69,9 +69,20 @@ test_vec = embed(["hello world"])
 EMBED_DIM = len(test_vec[0])
 log.info(f"  embed dim={EMBED_DIM} ✅")
 
+# Wrap DSN in Secret for haystack-integrations compatibility
+try:
+    from haystack.utils import Secret
+    _conn_str = Secret.from_token(PG_DSN)
+except (ImportError, AttributeError):
+    try:
+        from haystack import Secret
+        _conn_str = Secret.from_token(PG_DSN)
+    except (ImportError, AttributeError):
+        _conn_str = PG_DSN  # fallback for older versions
+
 log.info("Initialising PgvectorDocumentStore ...")
 document_store = PgvectorDocumentStore(
-    connection_string=Secret.from_token(PG_DSN),
+    connection_string=_conn_str,
     table_name="haystack_docs",
     embedding_dimension=EMBED_DIM,
     vector_function="cosine_similarity",

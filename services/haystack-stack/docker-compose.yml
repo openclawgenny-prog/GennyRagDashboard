@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  haystack:
+    image: deepset/haystack:base-v2.12.1
+    container_name: haystack
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - POSTGRES_HOST=postgres-pgvector-db-1
+      - POSTGRES_PORT=5432
+      - POSTGRES_DB=vectordb
+      - POSTGRES_USER=andrei
+      - POSTGRES_PASSWORD=PostgressGreenCat1!
+      - OLLAMA_HOST=ollama
+      - OLLAMA_PORT=11434
+      - EMBED_MODEL=all-minilm:latest
+      - HAYSTACK_API_HOST=0.0.0.0
+      - HAYSTACK_API_PORT=8000
+    volumes:
+      - /mnt/data_disk/data/haystack:/app
+    entrypoint: ["/bin/bash","-c","pip install -q --no-cache-dir fastapi 'uvicorn[standard]' httpx psycopg2-binary pgvector-haystack && python3 /app/pipeline.py"]
+    healthcheck:
+      test: ["CMD","curl","-f","http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 90s
+    networks:
+      - postgres-pgvector_default
+
+networks:
+  postgres-pgvector_default:
+    external: true
