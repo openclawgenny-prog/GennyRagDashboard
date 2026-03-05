@@ -1,1 +1,5 @@
-{"username": "admin", "password_hash": "$2b$12$nW60m18sg845j0nccRS6AerpyoC7g1oehlK3574kioSHzqFOQnf2u", "first_login": true}
+{
+  "username": "admin",
+  "password_hash": "$2b$12$nW60m18sg845j0nccRS6AerpyoC7g1oehlK3574kioSHzqFOQnf2u",
+  "first_login": false
+}
